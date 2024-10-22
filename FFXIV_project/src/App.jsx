@@ -14,7 +14,7 @@ export const ItemContext = createContext();
 
 function App() {
   const [selectedItem, setSelectedItem] = useState(null); // State to hold selected item
-  
+
   return (
     <ItemContext.Provider value={{ selectedItem, setSelectedItem }}>
       <Router>

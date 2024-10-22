@@ -58,8 +58,7 @@ function SearchPage() {
         <Col md={6}>
           <Card>
             <Card.Body>
-              <Card.Title className="text-center">Search Items</Card.Title>
-              
+              <Card.Title className="text-center">Search Items</Card.Title>             
               <div className="SearchPage" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <SearchableDropdown
                   options={options}
@@ -68,8 +67,7 @@ function SearchPage() {
                   selectedVal={value}
                   handleChange={handleDropdownChange}
                 />
-              </div>
-              
+              </div>           
             </Card.Body>
           </Card>
         </Col>
