@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState, useContext } from "react";
+import { ItemContext } from "./App";
 
 
 
@@ -13,21 +13,20 @@ const SearchableDropdown = ({
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef(null);
-  const navigate = useNavigate();
+  const { setSelectedItem } = useContext(ItemContext);
   useEffect(() => {
     document.addEventListener("click", toggle);
     return () => document.removeEventListener("click", toggle);
   }, []);
 
-  const handleDropdownChange = (option) => {
-    console.log("Success")
-    navigate('/graphs', { state: { selectedItem: option } }); // Navigate to GraphPage and pass the selected item
-  };
+  
   const selectOption = (option) => {
     setQuery(() => "");
     handleChange(option[label]);
-    console.log(option)
-    handleDropdownChange(option)
+    console.log(option.name)
+    const selectedItem = option;
+    setSelectedItem(selectedItem)
+    console.log(ItemContext)
     setIsOpen(false); 
   };
 
@@ -56,6 +55,7 @@ const SearchableDropdown = ({
   const shouldShowOptions = query && filter(options).length > 0;
 
   return (
+    
     <div className="dropdown">
       <div className="control">
         <div className="selected-value">
@@ -88,6 +88,7 @@ const SearchableDropdown = ({
             >
               {option[label]}
             </div>
+          
           );
         })}
       
@@ -96,6 +97,7 @@ const SearchableDropdown = ({
         )}
       </div>
     </div>
+    
   );
 };
 

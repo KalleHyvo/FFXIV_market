@@ -1,17 +1,21 @@
 
 // src/Pages/SearchPage.jsx
 import SearchableDropdown from "../SearchableDropdown";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Card } from 'react-bootstrap'; // Importing Bootstrap components
 import "../styles.css";
 import Papa from "papaparse";
 import item from "../item"
 import ItemIDName from "../ItemIDName.csv";
+import { ItemContext } from "../App";
+
+
+
 
 function SearchPage() {
   const [value, setValue] = useState("Select option...");
   const [options, setOptions] = useState([]);
- 
+  const { setSelectedItem } = useContext(ItemContext);
   useEffect(() => {
     const fetchParseData = async () => {
       const dropdown = [];
@@ -41,29 +45,37 @@ function SearchPage() {
   
     fetchParseData();
   }, []);
-
+  const handleDropdownChange = (val) => {
+    const selectedItem = options.find(option => option.name === val); // Find selected item from options
+    setSelectedItem(selectedItem); // Update context with selected item
+    setValue(val); // Update local state with selected value
+  };
 
   return (
+    
     <Container className="mt-5">
       <Row className="justify-content-center">
         <Col md={6}>
           <Card>
             <Card.Body>
               <Card.Title className="text-center">Search Items</Card.Title>
+              
               <div className="SearchPage" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <SearchableDropdown
                   options={options}
                   label="name"
                   id="id"
                   selectedVal={value}
-                  handleChange={(val) => setValue(val)}
+                  handleChange={handleDropdownChange}
                 />
               </div>
+              
             </Card.Body>
           </Card>
         </Col>
       </Row>
     </Container>
+    
   );
 }
 
