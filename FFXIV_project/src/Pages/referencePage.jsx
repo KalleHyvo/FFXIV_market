@@ -5,6 +5,9 @@ export function ReferencePage() {
     // Retrieve the item and setSelectedItem from context
     const { selectedItem } = useContext(ItemContext);  // Destructure to get the selectedItem
 
+
+    
+
     return (
       <div>
         <h1>This page has references</h1>
