@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ItemContext } from "../App";
 
+
+
+
 export function ReferencePage() {
   // Retrieve the selectedItem from context
   const { selectedItem } = useContext(ItemContext);
@@ -9,6 +12,7 @@ export function ReferencePage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [recipeData, setRecipeData] = useState(null);
   const jobArray = ["ADV","GLA","PGL","MRD","LNC","ARC","CNJ","THM","CRP","BSM",
                     "ARM","GSM","LTW","WVR","ALC","CUL","MIN","BTN","FSH","PLD",
                     "MNK","WAR","DRG","BRD","WHM","BLM","ACN","SMN","SCH","ROG",
@@ -25,7 +29,7 @@ export function ReferencePage() {
       try {
         // Replace 'YOUR_API_KEY' with your actual API key if required
         const response = await fetch(`https://xivapi.com/Item/${selectedItem.id}`);
-        const Reciperesponse = await fetch(`https://xivapi.com/${RecipeID}`);
+      
         
         if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
@@ -35,6 +39,20 @@ export function ReferencePage() {
         const data = await response.json();
         setData(data);
         console.log(data)
+        
+        if (data.Recipes && data.Recipes.length > 0) {
+          console.log("Working")
+          const recipeResponse = await fetch(`https://beta.xivapi.com/api/1/search?sheets=Recipe&query=ItemResult.Name~"${selectedItem.name}"&fields=AmountIngredient,Ingredient`);
+          if (!recipeResponse.ok) {
+            throw new Error(`Error fetching recipe data: ${recipeResponse.status} ${recipeResponse.statusText}`);
+          }
+          
+          const recipeData = await recipeResponse.json();
+          setRecipeData(recipeData); // Store detailed recipe data
+          console.log(recipeData)
+        }
+        else{console.log("no work")}
+
 
       } catch (err) {
         console.error('Error fetching item data:', err);
@@ -61,7 +79,6 @@ export function ReferencePage() {
 
           {data && (
             <div>
-              {/* Display item description */}
               <p>{data.Description}</p>
 
               {/* Display ClassJobCategory and Recipes if ClassJobCategory is not null */}
@@ -82,6 +99,17 @@ export function ReferencePage() {
                             {/* Display other recipe details as needed */}
                           </li>
                         ))}
+
+                        {/* Render ingredients if recipeData is available */}
+                        {recipeData && recipeData.results[0].fields.Ingredient
+                            .map((ingredient, index) => ({
+                              ingredient, amount: recipeData.results[0].fields.AmountIngredient[index]}))
+                              .filter(({ ingredient, amount }) => ingredient.row_id !== 0 && amount !== 0)
+                              .map(({ ingredient, amount }) => (
+                            <li key={ingredient.row_id}>
+                            {amount}x {ingredient.fields.Name} (Id: {ingredient.row_id})
+                            </li>))}
+
                       </ul>
                     </div>
                   )}

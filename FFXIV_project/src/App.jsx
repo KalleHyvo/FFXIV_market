@@ -9,16 +9,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { createContext, useState } from 'react';
 
 
-// Create UserContext
+
 export const ItemContext = createContext();
 
 function App() {
-  const [selectedItem, setSelectedItem] = useState(null); // State to hold selected item
+  const [selectedItem, setSelectedItem] = useState(null); 
 
   return (
     <ItemContext.Provider value={{ selectedItem, setSelectedItem }}>
       <Router>
-        {/* Navbar component */}
+        
         <PageNav /> 
 
         <Routes>
